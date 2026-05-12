@@ -11,6 +11,7 @@ def main():
                         choices=['clean', 'symmetric', 'asymmetric'])
     parser.add_argument('--noise_rate', type=float, default=0.0)
     parser.add_argument('--epochs', type=int, default=100)
+    parser.add_argument('--label_smoothing', type=float, default=0.0)
     args = parser.parse_args()
 
     train_dataset, test_dataset = load_cifar10()
@@ -29,13 +30,18 @@ def main():
         dataset = NoisyDataset(train_dataset, noisy_targets)
         name = f'asymmetric_{int(args.noise_rate*100)}'
 
-    print(f"Noise type: {args.noise_type} | Requested: {args.noise_rate:.0%} | Actual: {actual_rate:.4f}")
+    if args.label_smoothing > 0.0:
+        name = f'{name}_ls{int(args.label_smoothing*100)}'
+
+    print(f"Noise type: {args.noise_type} | Requested: {args.noise_rate:.0%} | "
+          f"Actual: {actual_rate:.4f} | Label smoothing: {args.label_smoothing}")
 
     _, history = run_experiment(
         train_dataset=dataset,
         test_dataset=test_dataset,
         num_epochs=args.epochs,
-        experiment_name=name
+        experiment_name=name,
+        label_smoothing=args.label_smoothing
     )
 
     save_history(history, f'results/{name}.json')

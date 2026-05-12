@@ -55,7 +55,8 @@ def evaluate(model, loader, criterion, device):
 
 
 def run_experiment(train_dataset, test_dataset, num_epochs=100,
-                   batch_size=128, lr=0.1, device=None, experiment_name='experiment'):
+                   batch_size=128, lr=0.1, device=None, experiment_name='experiment',
+                   label_smoothing=0.0):
     if device is None:
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -64,7 +65,7 @@ def run_experiment(train_dataset, test_dataset, num_epochs=100,
                                                 batch_size=batch_size)
 
     model = get_resnet18().to(device)
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.CrossEntropyLoss(label_smoothing=label_smoothing)
     optimizer = torch.optim.SGD(model.parameters(), lr=lr,
                                 momentum=0.9, weight_decay=5e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=num_epochs)
