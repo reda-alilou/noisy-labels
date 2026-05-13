@@ -3,6 +3,7 @@ import numpy as np
 from src.utils import load_cifar10, get_dataloaders, NoisyDataset, save_history
 from src.noise import inject_symmetric_noise, inject_asymmetric_noise
 from src.train import run_experiment
+import os
 
 
 def main():
@@ -32,6 +33,11 @@ def main():
 
     if args.label_smoothing > 0.0:
         name = f'{name}_ls{int(args.label_smoothing*100)}'
+
+    save_path = f'results/{name}.json'
+    if os.path.exists(save_path):
+        print(f"Results already exist at {save_path}. Skipping to avoid overwrite.")
+        return
 
     print(f"Noise type: {args.noise_type} | Requested: {args.noise_rate:.0%} | "
           f"Actual: {actual_rate:.4f} | Label smoothing: {args.label_smoothing}")

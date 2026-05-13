@@ -34,10 +34,10 @@ def load_cifar10(data_dir='./data'):
 def get_dataloaders(train_dataset, test_dataset, batch_size=128, num_workers=4):
     train_loader = DataLoader(train_dataset, batch_size=batch_size,
                               shuffle=True, num_workers=num_workers,
-                              pin_memory=True)
+                              pin_memory=True, persistent_workers=True)
     test_loader = DataLoader(test_dataset, batch_size=batch_size,
                              shuffle=False, num_workers=num_workers,
-                             pin_memory=True)
+                             pin_memory=True, persistent_workers=True)
     return train_loader, test_loader
 
 

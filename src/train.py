@@ -20,7 +20,7 @@ def train_one_epoch(model, loader, optimizer, criterion, device):
 
     for imgs, labels in tqdm(loader, leave=False):
         imgs, labels = imgs.to(device), labels.to(device)
-        optimizer.zero_grad()
+        optimizer.zero_grad(set_to_none=True)
         outputs = model(imgs)
         loss = criterion(outputs, labels)
         loss.backward()
@@ -57,6 +57,9 @@ def evaluate(model, loader, criterion, device):
 def run_experiment(train_dataset, test_dataset, num_epochs=100,
                    batch_size=128, lr=0.1, device=None, experiment_name='experiment',
                    label_smoothing=0.0):
+    
+    torch.backends.cudnn.benchmark = True
+
     if device is None:
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
